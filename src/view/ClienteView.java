@@ -7,6 +7,7 @@ package view;
 
 import control.ClienteControl;
 import javax.swing.JOptionPane;
+import util.validacaoException;
 
 /**
  *
@@ -191,15 +192,20 @@ public class ClienteView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        clienteControl.salvar();
-        JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso", "Salvar cliente", JOptionPane.INFORMATION_MESSAGE);
+        try{
+            clienteControl.salvar();
+            JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso", "Salvar cliente", JOptionPane.INFORMATION_MESSAGE);
+        } catch(validacaoException e){
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Falha de Validação", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         if (JOptionPane.showConfirmDialog(this, "Deseja realmente excluir o cliente?", "Excluir cliente", 
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
             clienteControl.excluir();
-            JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso", "Excluir cliente", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso", 
+                    "Excluir cliente", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
 

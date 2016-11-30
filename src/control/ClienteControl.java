@@ -5,12 +5,16 @@
  */
 package control;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import model.dao.ClienteDao;
+import model.dao.ClienteDaoImpl;
 import model.domain.Cliente;
+import model.service.ServiceLocator;
 import org.jdesktop.observablecollections.ObservableCollections;
+import util.validacaoException;
 
 /**
  *
@@ -18,7 +22,7 @@ import org.jdesktop.observablecollections.ObservableCollections;
  */
 public final class ClienteControl {
     
-    private PropertyChangeSupport propertyChangeSupport = 
+    private final PropertyChangeSupport propertyChangeSupport = 
             new PropertyChangeSupport(this);
     
     private Cliente clienteDigitado;
@@ -27,10 +31,10 @@ public final class ClienteControl {
     
     private List<Cliente> clientesTabela;
     
-    private ClienteDao clienteDao;
+    private final ClienteDao clienteDao;
     
     public ClienteControl(){
-        clienteDao = new ClienteDao();
+        clienteDao = ServiceLocator.getClienteDao();
         clientesTabela = ObservableCollections.observableList(new ArrayList<Cliente>());
         novo();
         pesquisar();
@@ -45,7 +49,8 @@ public final class ClienteControl {
         clientesTabela.addAll(clienteDao.pesquisar(clienteDigitado));
     }
     
-    public void salvar(){
+    public void salvar() throws validacaoException{
+        clienteDigitado.validar();
         clienteDao.salvarAtualizar(clienteDigitado);
         novo();
         pesquisar();
@@ -58,14 +63,6 @@ public final class ClienteControl {
     }
 
     //GETS E SETS
-    public PropertyChangeSupport getPropertyChangeSupport() {
-        return propertyChangeSupport;
-    }
-
-    public void setPropertyChangeSupport(PropertyChangeSupport propertyChangeSupport) {
-        this.propertyChangeSupport = propertyChangeSupport;
-    }
-
     public Cliente getClienteDigitado() {
         return clienteDigitado;
     }
@@ -83,7 +80,7 @@ public final class ClienteControl {
     public void setClienteSelecionado(Cliente clienteSelecionado) {
         this.clienteSelecionado = clienteSelecionado;
         if(this.clienteSelecionado != null){
-            setClienteDigitado(clienteDigitado);
+            setClienteDigitado(clienteSelecionado);
         }
     }
 
@@ -93,14 +90,6 @@ public final class ClienteControl {
 
     public void setClientesTabela(List<Cliente> clientesTabela) {
         this.clientesTabela = clientesTabela;
-    }
-
-    public ClienteDao getClienteDao() {
-        return clienteDao;
-    }
-
-    public void setClienteDao(ClienteDao clienteDao) {
-        this.clienteDao = clienteDao;
     }
     //FIM GETS E SETS
     
